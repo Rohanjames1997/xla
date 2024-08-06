@@ -320,6 +320,7 @@ class DebugOptions:
   xla_gpu_dump_autotune_logs_to: str
   # TODO(b/352486192): Move this to `ExecutableBuildOptions`.
   xla_use_shardy: bool
+  xla_cpu_use_acl: bool
 
 class CompiledMemoryStats:
   generated_code_size_in_bytes: int
