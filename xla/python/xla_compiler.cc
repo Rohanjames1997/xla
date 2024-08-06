@@ -1202,7 +1202,9 @@ void BuildXlaCompilerSubmodule(nb::module_& m) {
                    })
       // TODO(b/352486192): Move this to `ExecutableBuildOptions`.
       .def_prop_rw("xla_use_shardy", &DebugOptions::xla_use_shardy,
-                   &DebugOptions::set_xla_use_shardy);
+                   &DebugOptions::set_xla_use_shardy)
+      .def_prop_rw("xla_cpu_use_acl", &DebugOptions::xla_cpu_use_acl,
+                   &DebugOptions::set_xla_cpu_use_acl);
 
   nb::class_<ExecutableBuildOptions>(m, "ExecutableBuildOptions")
       .def(nb::init<>())
