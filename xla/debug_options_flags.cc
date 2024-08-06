@@ -76,12 +76,13 @@ DebugOptions DefaultDebugOptionsIgnoringFlags() {
   opts.set_xla_dump_large_constants(false);
   opts.set_xla_dump_enable_mlir_pretty_form(true);
   opts.set_xla_debug_buffer_assignment_show_max(15);
+  opts.set_xla_cpu_use_acl(true);
 #ifdef ENABLE_MKL
   opts.set_xla_cpu_use_mkl_dnn(true);
 #endif  // ENABLE_MKL
-#ifdef XLA_CPU_USE_ACL
-  opts.set_xla_cpu_use_acl(true);
-#endif
+// #ifdef XLA_CPU_USE_ACL
+//   opts.set_xla_cpu_use_acl(true);
+// #endif
   opts.set_xla_cpu_use_thunk_runtime(false);
   opts.set_xla_cpu_enable_concurrency_optimized_scheduler(false);
   opts.set_xla_cpu_prefer_vector_width(256);
