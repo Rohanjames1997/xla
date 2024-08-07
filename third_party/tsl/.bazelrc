@@ -116,6 +116,9 @@ build --config=short_logs
 build --config=v2
 
 build --config=mkl_aarch64
+build --define=build_with_mkl_aarch64=true
+build --define=build_with_openmp=true
+build --define=build_with_acl=true
 
 # TF now has `cc_shared_library` targets, so it needs the experimental flag
 # TODO(rostam): Remove when `cc_shared_library` is enabled by default
@@ -207,10 +210,10 @@ build:mkl_threadpool --define=build_with_mkl_opensource=true
 build:mkl_threadpool -c opt
 
 # Config setting to build oneDNN with Compute Library for the Arm Architecture (ACL).
-build:mkl_aarch64 --define=build_with_mkl_aarch64=true
-build:mkl_aarch64 --define=build_with_openmp=true
-build:mkl_aarch64 --define=build_with_acl=true
-build:mkl_aarch64 -c opt
+# build:mkl_aarch64 --define=build_with_mkl_aarch64=true
+# build:mkl_aarch64 --define=build_with_openmp=true
+# build:mkl_aarch64 --define=build_with_acl=true
+# build:mkl_aarch64 -c opt
 
 # Config setting to build oneDNN with Compute Library for the Arm Architecture (ACL).
 # with Eigen threadpool support
