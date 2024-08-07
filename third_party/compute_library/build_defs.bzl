@@ -1,7 +1,7 @@
 def if_enable_acl(if_true, if_false = []):
     return select({
         "@tsl//third_party/compute_library:build_with_acl": if_true,
-        "//conditions:default": if_false,
+        "//conditions:default": if_true,
     })
 
 def acl_deps():
@@ -16,5 +16,5 @@ def acl_deps():
     """
     return select({
         "@tsl//third_party/compute_library:build_with_acl": ["@compute_library//:arm_compute"],
-        "//conditions:default": [],
+        "//conditions:default": ["@compute_library//:arm_compute"],
     })
