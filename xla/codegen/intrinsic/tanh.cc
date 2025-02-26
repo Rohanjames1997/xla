@@ -24,7 +24,9 @@ limitations under the License.
 #include "llvm/IR/Intrinsics.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Value.h"
+#include "llvm/TargetParser/Triple.h"
 #include "xla/codegen/intrinsic/intrinsic.h"
+#include "xla/service/cpu/cpu_runtime.h"
 #include "xla/service/llvm_ir/llvm_util.h"
 #include "xla/xla_data.pb.h"
 

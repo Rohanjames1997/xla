@@ -119,6 +119,19 @@ cc_library(
 )
 
 cc_library(
+    name = "runtime_tanh",
+    srcs = ["runtime_tanh.cc"],
+    hdrs = ["runtime_tanh.h"],
+    copts = runtime_copts(),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_google_absl//absl/base",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/base:dynamic_annotations",
+    ],
+)
+
+cc_library(
     name = "cpu_compiler_pure",
     srcs = [
         "cpu_compiler.cc",
