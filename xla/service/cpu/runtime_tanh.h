@@ -7,7 +7,7 @@
 
 extern "C" {
 
-extern float __xla_cpu_runtime_Aarch64SveHyperbolicTangent(float input);
+extern void __xla_cpu_runtime_Aarch64SveHyperbolicTangent(float *input, float *output, int size);
 }
 
 #endif  // XLA_SERVICE_CPU_RUNTIME_TOPK_H_

@@ -10,7 +10,7 @@
 
 #pragma GCC target("+sve")
 #pragma clang attribute push(__attribute__((target("sve"))), apply_to = function)
-void tanh_array_sve_x4(float *input, float *output, int size)
+ABSL_ATTRIBUTE_NO_SANITIZE_MEMORY void __xla_cpu_runtime_Aarch64SveHyperbolicTangent(float *input, float *output, int size)
 {
     // This is a manually scheduled implemtation of the x4 unrolled SVE version.
     // The statements in groups separated by line breaks should be able to go
@@ -150,9 +150,9 @@ void tanh_array_sve_x4(float *input, float *output, int size)
 #pragma clang attribute pop
 
 
-ABSL_ATTRIBUTE_NO_SANITIZE_MEMORY float __xla_cpu_runtime_Aarch64SveHyperbolicTangent(float input)
-{
-    float output;
-    tanh_array_sve_x4(&input, &output, 1);
-    return output;
-}
+// ABSL_ATTRIBUTE_NO_SANITIZE_MEMORY float __xla_cpu_runtime_Aarch64SveHyperbolicTangent(float input)
+// {
+//     float output;
+//     tanh_array_sve_x4(&input, &output, 1);
+//     return output;
+// }
