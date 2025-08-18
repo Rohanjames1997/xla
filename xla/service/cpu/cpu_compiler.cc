@@ -172,6 +172,7 @@ limitations under the License.
 #include "xla/service/conditional_simplifier.h"
 #include "xla/service/conditional_to_select.h"
 #include "xla/service/copy_insertion.h"
+#include "xla/service/cpu/aarch64_sve_tanh_rewriter.h"
 #include "xla/service/cpu/conv_canonicalization.h"
 #include "xla/service/cpu/cpu_aot_compilation_result.h"
 #include "xla/service/cpu/cpu_aot_loader.h"
@@ -674,6 +675,7 @@ absl::Status CpuCompiler::RunHloPassesThroughLayoutAssn(
 
   HloPassPipeline pipeline("HLO passes through layout assignment");
   AddHloVerifier(&pipeline);
+  pipeline.AddPass<Aarch64SveTanhRewriter>();
   pipeline.AddPass<BatchedGatherScatterNormalizer>();
   pipeline.AddPass<ResultCaster>();
 

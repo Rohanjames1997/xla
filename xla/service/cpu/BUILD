@@ -119,6 +119,19 @@ cc_library(
 )
 
 cc_library(
+    name = "aarch64_sve_tanh_rewriter",
+    srcs = ["aarch64_sve_tanh_rewriter.cc"],
+    hdrs = ["aarch64_sve_tanh_rewriter.h"],
+    deps = [
+        ":cpu_runtime",
+        "//xla/hlo/ir:hlo",
+        "//xla/hlo/pass:hlo_pass",
+        "//xla:literal_util",
+        "//xla:shape_util",
+    ],
+)
+
+cc_library(
     name = "runtime_tanh",
     srcs = ["runtime_tanh.cc"],
     hdrs = ["runtime_tanh.h"],
@@ -141,6 +154,7 @@ cc_library(
     ],
     copts = tsl_copts(),
     deps = [
+        ":aarch64_sve_tanh_rewriter",
         ":conv_canonicalization",
         ":cpu_aot_compilation_result",
         ":cpu_aot_loader",
