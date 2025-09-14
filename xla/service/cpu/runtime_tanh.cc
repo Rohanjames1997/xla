@@ -7,11 +7,22 @@
 #include "absl/base/dynamic_annotations.h"
 
 #include "xla/service/cpu/runtime_tanh.h"
+#include "xla/service/custom_call_target_registry.h"
 
 #pragma GCC target("+sve")
 #pragma clang attribute push(__attribute__((target("sve"))), apply_to = function)
-ABSL_ATTRIBUTE_NO_SANITIZE_MEMORY void __xla_cpu_runtime_Aarch64SveHyperbolicTangent(float *input, float *output, int size)
+ABSL_ATTRIBUTE_NO_SANITIZE_MEMORY void __xla_cpu_runtime_Aarch64SveHyperbolicTangent(
+    void* out, const void** in, const char* /*opaque*/, size_t /*opaque_len*/,
+    void* /*status*/)
 {
+    // API_VERSION_STATUS_RETURNING_UNIFIED convention:
+    // in[0] is input buffer, in[1] is size constant
+    const float* input = static_cast<const float*>(in[0]);
+    float* output = static_cast<float*>(out);
+    const int32_t* size_ptr = static_cast<const int32_t*>(in[1]);
+    int size = *size_ptr;
+    
+    // Original SVE implementation follows...
     // This is a manually scheduled implemtation of the x4 unrolled SVE version.
     // The statements in groups separated by line breaks should be able to go
     // through the execution pipelines in parallel.
@@ -156,3 +167,7 @@ ABSL_ATTRIBUTE_NO_SANITIZE_MEMORY void __xla_cpu_runtime_Aarch64SveHyperbolicTan
 //     tanh_array_sve_x4(&input, &output, 1);
 //     return output;
 // }
+
+XLA_CPU_REGISTER_CUSTOM_CALL_TARGET_WITH_SYM(
+    "__xla_cpu_runtime_Aarch64SveHyperbolicTangent",
+    __xla_cpu_runtime_Aarch64SveHyperbolicTangent);

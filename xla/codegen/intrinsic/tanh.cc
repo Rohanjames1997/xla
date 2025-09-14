@@ -182,10 +182,47 @@ absl::StatusOr<llvm::Function*> Tanh::CreateDefinition(llvm::Module* module,
   llvm::IRBuilder<> builder(entry_bb);
 
   llvm::Value* result;
+  llvm::Triple target_triple(module->getTargetTriple());
   if (type.element_type() == F64) {
     // Need increased precision for F64.
     // See https://github.com/jax-ml/jax/issues/23590
     result = EmitFastTanhF64(&builder, input_x_arg, /*with_fma=*/false);
+  } else if (type.element_type() == F32 && target_triple.isAArch64() &&
+             type.vector_width().value() >= 16) {
+    // For aarch64 with large F32 vectors, use the SVE runtime function.
+    llvm::LLVMContext& context = module->getContext();
+    llvm::FunctionType* sve_func_type = llvm::FunctionType::get(
+        llvm::Type::getVoidTy(context),
+        {
+            llvm::PointerType::get(llvm::Type::getFloatTy(context), 0),
+            llvm::PointerType::get(llvm::Type::getFloatTy(context), 0),
+            llvm::Type::getInt32Ty(context),
+        },
+        false);
+    llvm::Function* sve_func = llvm::cast<llvm::Function>(
+        module
+            ->getOrInsertFunction(
+                cpu::runtime::kAarch64SveHyperbolicTangentSymbolName,
+                sve_func_type)
+            .getCallee());
+
+    llvm::Value* input_ptr = builder.CreateAlloca(input_x_arg->getType());
+    llvm::Value* output_ptr = builder.CreateAlloca(input_x_arg->getType());
+    builder.CreateStore(input_x_arg, input_ptr);
+
+    llvm::Value* input_f32_ptr = builder.CreateBitCast(
+        input_ptr,
+        llvm::PointerType::get(llvm::Type::getFloatTy(context), 0));
+    llvm::Value* output_f32_ptr = builder.CreateBitCast(
+        output_ptr,
+        llvm::PointerType::get(llvm::Type::getFloatTy(context), 0));
+
+    builder.CreateCall(
+        sve_func,
+        {input_f32_ptr, output_f32_ptr,
+         builder.getInt32(type.vector_width().value())});
+
+    result = builder.CreateLoad(input_x_arg->getType(), output_ptr);
   } else if (type.element_type() == F32) {
     result = EmitFastTanh(&builder, input_x_arg, /*with_fma=*/true);
   } else if (type.element_type() == F16) {
